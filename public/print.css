@@ -1,0 +1,9 @@
+/* Hide everything by default */
+body * {
+  display: none !important;
+}
+
+/* Show the elements you want to print */
+.printable {
+  display: block;
+}
