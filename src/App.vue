@@ -11,6 +11,7 @@ interface Subject {
   todoList: Todo[];
 }
 const isViewMode = ref(false);
+const isPrintMode = ref(false);
 const subjects = ref<Subject[]>([
   {
     name: "课程示例",
@@ -22,8 +23,8 @@ const subjects = ref<Subject[]>([
     ],
   },
 ]);
-const archives = ref<Array<Array<Subject>>>([])
-const confirmArchive = ref(false)
+const archives = ref<Array<Array<Subject>>>([]);
+const confirmArchive = ref(false);
 
 onMounted(() => {
   const subjectsStr = localStorage.getItem("homework.subjects");
@@ -40,8 +41,7 @@ onMounted(() => {
     localStorage.setItem("homework.subjects", JSON.stringify(subjects.value));
     localStorage.setItem("homework.archives", JSON.stringify(archives.value));
   };
-})
-
+});
 
 const addSubject = () => {
   subjects.value.unshift({
@@ -55,30 +55,15 @@ const addSubject = () => {
   });
 };
 
-const onArchive = () => {
-
-}
+const onArchive = () => {};
 
 const onPrint = () => {
-  // Create a <link> element for the print stylesheet
-  const link = document.createElement('link');
-  link.href = '/print.css'; // Replace with your actual path
-  link.rel = 'stylesheet';
-  link.media = 'print';
-
-  // Append the <link> to the <head>
-  document.head.appendChild(link);
-
-  // Print the specific parts
   window.print();
-
-  // Remove the print stylesheet after printing
-  link.parentNode!.removeChild(link);
-}
+};
 </script>
 
 <template>
-  <div>
+  <div id="workspace">
     <div class="q-pa-md q-gutter-sm">
       <div style="display: flex; gap: 16px">
         <h6 style="margin: 0; line-height: 1.5">
@@ -100,7 +85,7 @@ const onPrint = () => {
         <q-btn
           size="md"
           color="white"
-          text-color="black" 
+          text-color="black"
           icon="add"
           @click="confirmArchive = true"
           label="归档"
@@ -115,9 +100,7 @@ const onPrint = () => {
         />
       </div>
       <div v-if="!isViewMode" class="q-pa-md row items-start q-gutter-md">
-        <template
-          v-for="(subject, subjectIndex) in subjects"
-        >
+        <template v-for="(subject, subjectIndex) in subjects">
           <q-card dark bordered class="bg-grey-9 my-card text-h6">
             <q-card-section>
               <span>
@@ -134,11 +117,12 @@ const onPrint = () => {
 
             <q-separator dark inset />
 
-            <q-card-section
-              v-for="(todo, index) in subject.todoList"
-            >
+            <q-card-section v-for="(todo, index) in subject.todoList">
               <div style="display: flex; gap: 4px">
-                <q-checkbox v-model="todo.done" @change="(e: Event) => todo.done = (e.target  as HTMLInputElement).checked"/>
+                <q-checkbox
+                  v-model="todo.done"
+                  @change="(e: Event) => todo.done = (e.target  as HTMLInputElement).checked"
+                />
                 <q-input
                   borderless
                   dark
@@ -183,47 +167,80 @@ const onPrint = () => {
         </template>
       </div>
 
-      <template v-else>
-        <div id="preview-content"
-          v-for="subject in subjects"
-          :key="subject.name"
-          class="printable q-pa-md row items-start q-gutter-md"
-        >
-          <q-card bordered class="my-card text-h6">
-            <q-card-section>
-              <span class="text-h6">
-                {{ subject.name }}
-              </span>
-            </q-card-section>
+      <div v-else class="q-pa-md row items-start q-gutter-md">
+        <q-card v-for="subject in subjects" bordered class="my-card text-h6">
+          <q-card-section>
+            <span class="text-h6">
+              {{ subject.name }}
+            </span>
+          </q-card-section>
 
-            <q-separator inset />
+          <q-separator inset />
 
-            <q-card-section v-for="todo in subject.todoList" :key="todo.name">
-              <div>
-                <q-checkbox v-model="todo.done" @change="(e: Event) => todo.done = (e.target as HTMLInputElement).checked" />
-                <span class="text-body1">{{ todo.name || "空白的任务" }}</span>
-              </div>
-            </q-card-section>
-          </q-card>
-        </div>
-      </template>
+          <q-card-section v-for="todo in subject.todoList" :key="todo.name">
+            <div>
+              <q-checkbox
+                v-model="todo.done"
+                @change="(e: Event) => todo.done = (e.target as HTMLInputElement).checked"
+              />
+              <span class="text-body1">{{ todo.name || "空白的任务" }}</span>
+            </div>
+          </q-card-section>
+        </q-card>
+      </div>
     </div>
   </div>
 
-
-    <q-dialog v-model="confirmArchive">
-      <q-card>
-        <q-card-section class="column items-center">
-          <span class="q-ml-sm">此功能暂不支持</span>
-          <span class="q-ml-sm">将当前清单归档，完成后，可在归档列表查找和载入已有清单</span>
+  <template>
+    <div
+      id="print-area"
+      v-for="subject in subjects"
+      :key="subject.name"
+      class="printable q-pa-md row items-start q-gutter-md"
+    >
+      <q-card bordered class="my-card text-h6">
+        <q-card-section>
+          <span class="text-h6">
+            {{ subject.name }}
+          </span>
         </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn flat label="取消" color="primary" v-close-popup @click="confirmArchive = true"/>
-          <q-btn flat label="继续" color="primary" v-close-popup disable />
-        </q-card-actions>
+        <q-separator inset />
+
+        <q-card-section v-for="todo in subject.todoList" :key="todo.name">
+          <div>
+            <q-checkbox
+              v-model="todo.done"
+              @change="(e: Event) => todo.done = (e.target as HTMLInputElement).checked"
+            />
+            <span class="text-body1">{{ todo.name || "空白的任务" }}</span>
+          </div>
+        </q-card-section>
       </q-card>
-    </q-dialog>
+    </div>
+  </template>
+
+  <q-dialog v-model="confirmArchive">
+    <q-card>
+      <q-card-section class="column items-center">
+        <span class="q-ml-sm">此功能暂不支持</span>
+        <span class="q-ml-sm"
+          >将当前清单归档，完成后，可在归档列表查找和载入已有清单</span
+        >
+      </q-card-section>
+
+      <q-card-actions align="right">
+        <q-btn
+          flat
+          label="取消"
+          color="primary"
+          v-close-popup
+          @click="confirmArchive = true"
+        />
+        <q-btn flat label="继续" color="primary" v-close-popup disable />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 </template>
 
 <style scoped></style>
