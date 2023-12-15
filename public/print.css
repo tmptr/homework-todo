@@ -1,9 +1,4 @@
-#print-area {
-  visibility: hidden;
-}
 
-
-@media print {
   body {
     background: #fff;
   }
@@ -20,10 +15,7 @@
   }
 
   #print-area {
-    visibility: visible;
-    position: fixed;
-    top: 0;
-    left: 0;
+    visibility: visible !important;
   }
 
 
@@ -111,4 +103,4 @@
   div.pageBlock {
     page-break-before: always;
   }
-}
+

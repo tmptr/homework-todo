@@ -191,34 +191,27 @@ const onPrint = () => {
     </div>
   </div>
 
-  <template>
-    <div
-      id="print-area"
-      v-for="subject in subjects"
-      :key="subject.name"
-      class="printable q-pa-md row items-start q-gutter-md"
-    >
-      <q-card bordered class="my-card text-h6">
-        <q-card-section>
-          <span class="text-h6">
-            {{ subject.name }}
-          </span>
-        </q-card-section>
+  <div id="print-area" class="q-pa-md row items-start q-gutter-md">
+    <q-card v-for="subject in subjects" bordered class="my-card text-h6">
+      <q-card-section>
+        <span class="text-h6">
+          {{ subject.name }}
+        </span>
+      </q-card-section>
 
-        <q-separator inset />
+      <q-separator inset />
 
-        <q-card-section v-for="todo in subject.todoList" :key="todo.name">
-          <div>
-            <q-checkbox
-              v-model="todo.done"
-              @change="(e: Event) => todo.done = (e.target as HTMLInputElement).checked"
-            />
-            <span class="text-body1">{{ todo.name || "空白的任务" }}</span>
-          </div>
-        </q-card-section>
-      </q-card>
-    </div>
-  </template>
+      <q-card-section v-for="todo in subject.todoList" :key="todo.name">
+        <div>
+          <q-checkbox
+            v-model="todo.done"
+            @change="(e: Event) => todo.done = (e.target as HTMLInputElement).checked"
+          />
+          <span class="text-body1">{{ todo.name || "空白的任务" }}</span>
+        </div>
+      </q-card-section>
+    </q-card>
+  </div>
 
   <q-dialog v-model="confirmArchive">
     <q-card>

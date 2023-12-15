@@ -1,6 +1,7 @@
 import { Quasar } from 'quasar'
 import quasarLang from 'quasar/lang/zh-CN'
 
+import './style.css'
 import "virtual:uno.css";
 // Import icon libraries
 import '@quasar/extras/roboto-font/roboto-font.css'
