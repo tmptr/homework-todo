@@ -11,7 +11,6 @@ interface Subject {
   todoList: Todo[];
 }
 const isViewMode = ref(false);
-const isPrintMode = ref(false);
 const subjects = ref<Subject[]>([
   {
     name: "课程示例",
@@ -55,7 +54,7 @@ const addSubject = () => {
   });
 };
 
-const onArchive = () => {};
+
 
 const onPrint = () => {
   window.print();
